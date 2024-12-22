@@ -1,10 +1,39 @@
 import { NextResponse } from "next/server"
+import Stripe from "stripe"
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_API_KEY as string, {
+  apiVersion: '2024-12-22'
+})
 
 export async function POST(request: Request) {
-  const body = await request.json()
-  console.log(JSON.stringify(body, null, 2))
+  const signature = request.headers.get("stripe-signature")
+  if (!signature) {
+    return NextResponse.json({
+      message: 'Bad request'
+    }, {
+      status: 400
+    })
+  }
 
-  return NextResponse.json({
-      message: `Hello ${body.name ?? "there"}!`
-  })
+  try {
+    const body = await request.arrayBuffer()
+    const event = stripe.webhooks.constructEvent(
+      Buffer.from(body),
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET as string
+    )
+    console.log({
+      type: event.type,
+      id: event.id,
+    })
+    return NextResponse.json({
+      message: `Hello Stripe webhook!`
+    })
+  } catch (err) {
+    const errorMessage = `⚠️  Webhook signature verification failed. ${(err as Error).message}`
+    console.log(errorMessage);
+    return new Response(errorMessage, {
+      status: 400
+    })
+  }
 }
