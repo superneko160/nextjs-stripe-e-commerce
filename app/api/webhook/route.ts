@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server"
 import Stripe from "stripe"
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_API_KEY as string, {
-  apiVersion: '2024-12-22'
-})
+const stripe = new Stripe(process.env.STRIPE_SECRET_API_KEY as string)
 
 export async function POST(request: Request) {
   const signature = request.headers.get("stripe-signature")
@@ -22,10 +20,43 @@ export async function POST(request: Request) {
       signature,
       process.env.STRIPE_WEBHOOK_SECRET as string
     )
-    console.log({
-      type: event.type,
-      id: event.id,
-    })
+
+    if ([
+      'checkout.session.completed',
+      'checkout.session.async_payment_succeeded',
+    ].includes(event.type)) {
+      // 決済が成功したケース
+      const data = event.data.object as Stripe.Checkout.Session
+      if (data.payment_status === 'paid') {
+
+        const customerDetails = data.customer_details
+        console.log({
+          name: customerDetails?.name,
+          address: customerDetails?.address,
+          email: customerDetails?.email,
+          phone: customerDetails?.phone,
+          amount_total: data.amount_total,
+          currency: data.currency
+        })
+
+        const { data: cartItems } = await stripe.checkout.sessions.listLineItems(data.id, {
+          expand: ['data.price.product']
+        })
+        cartItems.forEach(item => {
+          const product = (item.price?.product as Stripe.Product)
+          console.log({
+            product: product.name,
+            unit_amount: item.price?.unit_amount,
+            currency: item.price?.currency,
+            quantity: item.quantity,
+            amount_total: item.amount_total
+          })
+        })
+      }
+    } else if (event.type === 'checkout.session.async_payment_failed') {
+      // 決済が失敗したケース
+    }
+  
     return NextResponse.json({
       message: `Hello Stripe webhook!`
     })
