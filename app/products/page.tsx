@@ -36,15 +36,19 @@ export default async function Page() {
                             <h2 className='text-xl font-bold'>{product.name}</h2>
                             {product.prices.map(price => {
                                 return (
-                                    <p
-                                        key={price.id}
-                                        className="flex justify-between my-2 items-center"
-                                    >
-                                        <span className="text-slate-700">{price.unit_amount?.toLocaleString()} {price.currency}</span>
-                                        <button
-                                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                        >Buy now</button>
-                                    </p>
+                                  <form
+                                    action={`/api/checkout`}
+                                    method='POST'
+                                    key={price.id}
+                                    className="flex justify-between my-2 items-center"
+                                  >
+                                    <input type="hidden" name="price_id" value={price.id} />
+                                    <span className="text-slate-700">{price.unit_amount?.toLocaleString()} {price.currency}</span>
+                                      <button
+                                        type="submit"
+                                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                      >購入</button>
+                                  </form>
                                 )
                             })}
                         </div>
