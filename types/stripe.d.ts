@@ -4,6 +4,6 @@ declare namespace JSX {
       'buy-button-id': string
       'publishable-key': string
       children: unknown
-    };
+    }
   }
 }

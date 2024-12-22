@@ -1,5 +1,5 @@
-import Stripe from "stripe"
+import Stripe from 'stripe'
 
 export type ProductWithPrices = Stripe.Product & {
-    prices: Array<Stripe.Price>
+  prices: Array<Stripe.Price>
 }

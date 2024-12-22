@@ -18,17 +18,35 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <header className="relative bg-white">
-          <nav aria-label="Top" className="max-w-7xl mx-auto py-2 px-4 sm:px-6 md:px-8">
+          <nav
+            aria-label="Top"
+            className="max-w-7xl mx-auto py-2 px-4 sm:px-6 md:px-8"
+          >
             <div className="h-16 flex items-center">
               <div className="hidden md:ml-8 md:block md:self-stretch">
                 <div className="h-full flex space-x-8">
-                  <a href="/" className="flex items-center text-sm font-medium text-gray-700 hover:underline">Home</a>
-                  <a href="/products" className="flex items-center text-sm font-medium text-gray-700 hover:underline">Products</a>
+                  <a
+                    href="/"
+                    className="flex items-center text-sm font-medium text-gray-700 hover:underline"
+                  >
+                    Home
+                  </a>
+                  <a
+                    href="/products"
+                    className="flex items-center text-sm font-medium text-gray-700 hover:underline"
+                  >
+                    Products
+                  </a>
                 </div>
               </div>
               <div className="ml-auto flex items-center">
                 <div className="hidden md:flex md:flex-1 md:items-center md:justify-end md:space-x-6">
-                  <a href="/" className="flex items-center text-sm font-medium text-gray-700 hover:underline">My page</a>
+                  <a
+                    href="/"
+                    className="flex items-center text-sm font-medium text-gray-700 hover:underline"
+                  >
+                    My page
+                  </a>
                 </div>
               </div>
             </div>
